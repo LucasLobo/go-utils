@@ -2,4 +2,4 @@ package logger
 
 type LoggerCtxMap loggerCtxMap
 
-var GetCtxMap = getCtxMap
+var GetCtxMap = mapFromCtx

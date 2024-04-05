@@ -40,7 +40,7 @@ func (h *CtxHandler) WithGroup(name string) slog.Handler {
 
 // Handle extends the default [slog.JSONHandler] Handle method by adding context attributes to the log record.
 func (h *CtxHandler) Handle(ctx context.Context, r slog.Record) error {
-	ctxMap, ok := getCtxMap(ctx)
+	ctxMap, ok := mapFromCtx(ctx)
 	if ok {
 		r = r.Clone()
 		for _, val := range ctxMap {

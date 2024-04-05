@@ -6,6 +6,7 @@ import (
 	"maps"
 )
 
+// loggerCtxKey is a context key, private to this package to avoid leaking the data out of the package.
 type loggerCtxKey struct{}
 
 type loggerCtxMap map[string]slog.Attr
@@ -14,8 +15,7 @@ type loggerCtxMap map[string]slog.Attr
 // All values added to the context using this function will be included in the logs when logger uses [CtxHandler]
 // and the context is passed to the logger.
 func WithValue(ctx context.Context, key, val string) context.Context {
-	// Calling this method performs a shallow copy of the underlying map, which means that creating child contexts does not
-	// modify the parent context.
+	// we clone the map to avoid modifying the original map
 	ctxMap := cloneCtxMap(ctx)
 	ctxMap[key] = slog.String(key, val)
 	// create a new context with the new map
@@ -36,13 +36,14 @@ func WithValues(ctx context.Context, values map[string]string) context.Context {
 }
 
 func cloneCtxMap(ctx context.Context) loggerCtxMap {
-	if ctxMap, ok := getCtxMap(ctx); ok {
+	if ctxMap, ok := mapFromCtx(ctx); ok {
 		return maps.Clone(ctxMap)
 	}
 	return loggerCtxMap{}
 }
 
-func getCtxMap(ctx context.Context) (loggerCtxMap, bool) {
+// mapFromCtx is a simple alias function to ctxMap, ok := ctx.Value(loggerCtxKey{}).(loggerCtxMap)
+func mapFromCtx(ctx context.Context) (loggerCtxMap, bool) {
 	ctxMap, ok := ctx.Value(loggerCtxKey{}).(loggerCtxMap)
 	return ctxMap, ok
 }
