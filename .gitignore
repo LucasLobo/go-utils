@@ -1,3 +1,17 @@
+# Folders
 vendor/
-.vscode/
+.idea/
+reports/
 bin/
+lint/
+coverage/
+test_report/
+
+# Files
+.DS_Store
+-template
+.scannerwork
+after_output.log
+local.env
+*.out
+*.html
